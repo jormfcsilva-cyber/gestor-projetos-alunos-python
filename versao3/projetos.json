@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "aluno": "Ana",
+        "turma": "12ºA",
+        "titulo": "Sistema de Gestão",
+        "tipo": "PAP",
+        "data_inicio": "01/01/2026",
+        "estado": "Em desenvolvimento",
+        "observacoes": "Fase inicial"
+    },
+    {
+        "id": 2,
+        "aluno": "Pedro",
+        "turma": "12ºA",
+        "titulo": "Website",
+        "tipo": "PAP",
+        "data_inicio": "01/01/2026",
+        "estado": "Em desenvolvimento",
+        "observacoes": "Fase intermédia"
+    }
+]
