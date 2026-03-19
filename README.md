@@ -16,11 +16,13 @@ Aplicação desenvolvida em Python para registo e acompanhamento de projetos de 
 - versao1 – versão inicial da aplicação
 - versao2 – melhoria com validação e armazenamento em ficheiro
 - versao3 – funcionalidades adicionais e estatísticas
+- versão4 - versão com base de dados SQLite (persistência robusta)
 
 ## Tecnologias
 
 - Python
 - JSON
+- SQLite
 - programação em consola
 
 ## Autor
