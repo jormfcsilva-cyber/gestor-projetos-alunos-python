@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}{% if projeto %}Editar Projeto{% else %}Novo Projeto{% endif %}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="/">Dashboard</a> ›
+    {% if projeto %}
+        <a href="/alunos/{{ projeto.aluno_id }}">{{ projeto.aluno_nome }}</a> ›
+        <a href="/projetos/{{ projeto.id }}">{{ projeto.titulo }}</a> › Editar
+    {% else %}
+        Novo Projeto
+    {% endif %}
+</div>
+
+<div class="page-header">
+    <h1>{% if projeto %}Editar Projeto{% else %}Novo Projeto{% endif %}</h1>
+    <p>{% if projeto %}Atualize os dados do projeto.{% else %}Crie um novo projeto para um aluno.{% endif %}</p>
+</div>
+
+<div class="form-card" style="max-width:720px;">
+    <form method="POST">
+        <div class="form-grid">
+
+            <div class="form-group full">
+                <label for="aluno_id">Aluno *</label>
+                <select id="aluno_id" name="aluno_id" required>
+                    <option value="">— selecione um aluno —</option>
+                    {% for a in alunos %}
+                        <option value="{{ a.id }}"
+                            {% if projeto and projeto.aluno_id == a.id %}selected
+                            {% elif aluno_id_pre and aluno_id_pre|int == a.id %}selected
+                            {% endif %}>
+                            {{ a.nome }} ({{ a.turma }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group full">
+                <label for="titulo">Título do projeto *</label>
+                <input type="text" id="titulo" name="titulo"
+                    value="{{ projeto.titulo if projeto else '' }}"
+                    placeholder="Ex: Sistema de Gestão de Biblioteca" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tipo">Tipo</label>
+                <select id="tipo" name="tipo">
+                    <option value="PAP"      {% if projeto and projeto.tipo == 'PAP'      %}selected{% endif %}>PAP</option>
+                    <option value="Trabalho" {% if projeto and projeto.tipo == 'Trabalho' %}selected{% endif %}>Trabalho</option>
+                    <option value="Outro"    {% if projeto and projeto.tipo == 'Outro'    %}selected{% endif %}>Outro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="data_inicio">Data de início</label>
+                <input type="text" id="data_inicio" name="data_inicio"
+                    value="{{ projeto.data_inicio if projeto else '' }}"
+                    placeholder="Ex: 01-02-2026">
+            </div>
+
+            <div class="form-group">
+                <label for="orientador">Orientador</label>
+                <input type="text" id="orientador" name="orientador"
+                    value="{{ projeto.orientador if projeto else '' }}"
+                    placeholder="Nome do orientador">
+            </div>
+
+            <div class="form-group">
+                <label for="estado_geral">Estado geral</label>
+                <select id="estado_geral" name="estado_geral">
+                    <option value="Por iniciar"      {% if projeto and projeto.estado_geral == 'Por iniciar'      %}selected{% endif %}>Por iniciar</option>
+                    <option value="Em desenvolvimento" {% if projeto and projeto.estado_geral == 'Em desenvolvimento' %}selected{% endif %}>Em desenvolvimento</option>
+                    <option value="Concluído"        {% if projeto and projeto.estado_geral == 'Concluído'        %}selected{% endif %}>Concluído</option>
+                </select>
+            </div>
+
+            <div class="form-group full">
+                <label for="observacoes">Observações</label>
+                <textarea id="observacoes" name="observacoes"
+                    placeholder="Notas gerais sobre o projeto...">{{ projeto.observacoes if projeto else '' }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ '/projetos/'+projeto.id|string if projeto else '/' }}" class="btn btn-surface">Cancelar</a>
+            <button type="submit" class="btn btn-accent">💾 {% if projeto %}Guardar alterações{% else %}Criar projeto{% endif %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

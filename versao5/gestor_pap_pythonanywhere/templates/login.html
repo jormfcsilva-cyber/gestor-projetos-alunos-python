@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login · Gestor PAP</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .login-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .login-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-logo {
+            width: 56px; height: 56px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.75rem;
+            margin: 0 auto 1.5rem;
+        }
+        .login-card h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.75rem;
+            margin-bottom: .4rem;
+        }
+        .login-card p {
+            color: var(--muted);
+            font-size: .85rem;
+            margin-bottom: 2rem;
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            text-align: left;
+        }
+        .login-form label {
+            font-size: .75rem;
+            font-weight: 600;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--muted);
+            display: block;
+            margin-bottom: .3rem;
+        }
+        .btn-login {
+            width: 100%;
+            justify-content: center;
+            padding: .8rem;
+            font-size: 1rem;
+            margin-top: .5rem;
+        }
+    </style>
+</head>
+<body>
+<div class="login-wrap">
+    <div class="login-card">
+        <div class="login-logo">📋</div>
+        <h1>Gestor PAP</h1>
+        <p>Escola Sec. Vergílio Ferreira · 2025/2026</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container" style="margin-bottom:1rem;">
+                    {% for cat, msg in messages %}
+                        <div class="flash {{ cat }}">⚠ {{ msg }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" class="login-form">
+            <div>
+                <label for="utilizador">Utilizador</label>
+                <input type="text" id="utilizador" name="utilizador"
+                       placeholder="Nome de utilizador" autofocus required>
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password"
+                       placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-accent btn-login">
+                🔐 Entrar
+            </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gestor PAP{% endblock %} · TGPSI</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<nav>
+    <a href="/" class="nav-brand">
+        <div class="nav-logo">📋</div>
+        <span class="nav-title">Gestor <span>PAP</span></span>
+    </a>
+    <div class="nav-links">
+        <a href="/"              class="nav-link {% if request.path == '/' %}active{% endif %}">Dashboard</a>
+        <a href="/alunos/novo"   class="nav-link">+ Aluno</a>
+        <a href="/projetos/novo" class="nav-link">+ Projeto</a>
+        <a href="/pesquisar"     class="nav-link">Pesquisar</a>
+        {% if session.get('role') == 'admin' %}
+        <a href="/utilizadores"  class="nav-link" style="color:var(--gold);">👥 Utilizadores</a>
+        {% endif %}
+        <span class="nav-link" style="color:var(--muted);font-size:.8rem;cursor:default;">{{ session.get('nome','') }}</span>
+        <a href="/logout" class="nav-link btn-exit">⏻ Sair</a>
+    </div>
+</nav>
+
+<main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for cat, msg in messages %}
+                    <div class="flash {{ cat }}">
+                        {% if cat == 'sucesso' %}✓{% else %}⚠{% endif %} {{ msg }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    Gestor de Projetos PAP · <span>Jorge Costa e Silva</span> · Escola Sec. Vergílio Ferreira · 2025/2026
+</footer>
+
+</body>
+</html>

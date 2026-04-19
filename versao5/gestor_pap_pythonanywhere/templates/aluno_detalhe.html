@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{{ aluno.nome }}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="/">Dashboard</a> › {{ aluno.nome }}
+</div>
+
+<div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div>
+        <h1>{{ aluno.nome }}</h1>
+        <p>
+            <span class="mono">{{ aluno.turma }}</span>
+            {% if aluno.curso %} · {{ aluno.curso }}{% endif %}
+            {% if aluno.ano_letivo %} · {{ aluno.ano_letivo }}{% endif %}
+            {% if aluno.email %} · <a href="mailto:{{ aluno.email }}" style="color:var(--accent)">{{ aluno.email }}</a>{% endif %}
+        </p>
+    </div>
+    <div class="actions">
+        <a href="/alunos/{{ aluno.id }}/editar" class="btn btn-surface">✏ Editar</a>
+        <a href="/projetos/novo?aluno_id={{ aluno.id }}" class="btn btn-accent">+ Projeto</a>
+        <a href="/alunos/{{ aluno.id }}/remover" class="btn btn-danger"
+           onclick="return confirm('Remover {{ aluno.nome }} e todos os seus projetos e fases?')">✕ Remover</a>
+    </div>
+</div>
+
+{% if aluno.observacoes %}
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:.875rem;color:var(--muted);">
+    📝 {{ aluno.observacoes }}
+</div>
+{% endif %}
+
+{% if projetos %}
+    {% for proj in projetos %}
+    <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-header">
+            <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
+                <h2><a href="/projetos/{{ proj.id }}" style="color:var(--text);text-decoration:none;">{{ proj.titulo }}</a></h2>
+                <span class="badge-tipo {% if proj.tipo == 'PAP' %}pap{% endif %}">{{ proj.tipo }}</span>
+                {% if proj.estado_geral == 'Por iniciar' %}
+                    <span class="badge por-iniciar">Por iniciar</span>
+                {% elif proj.estado_geral == 'Em desenvolvimento' %}
+                    <span class="badge em-desenvolvimento">Em desenvolvimento</span>
+                {% elif proj.estado_geral == 'Concluído' %}
+                    <span class="badge concluido">Concluído</span>
+                {% endif %}
+            </div>
+            <div class="actions">
+                <span class="mono" style="font-size:.78rem;">{{ proj.num_fases }} fase(s)</span>
+                <a href="/fases/nova?projeto_id={{ proj.id }}" class="btn btn-accent btn-sm">+ Fase</a>
+                <a href="/projetos/{{ proj.id }}" class="btn btn-surface btn-sm">Ver projeto</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <p style="font-size:.82rem;color:var(--muted);">
+                {% if proj.data_inicio %}Início: <span class="mono">{{ proj.data_inicio }}</span>{% endif %}
+                {% if proj.orientador %} · Orientador: {{ proj.orientador }}{% endif %}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="card">
+        <div class="empty-state">
+            <div class="empty-icon">📁</div>
+            <h3>Sem projetos</h3>
+            <p>Este aluno ainda não tem nenhum projeto associado.</p>
+            <a href="/projetos/novo?aluno_id={{ aluno.id }}" class="btn btn-accent">+ Criar projeto</a>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

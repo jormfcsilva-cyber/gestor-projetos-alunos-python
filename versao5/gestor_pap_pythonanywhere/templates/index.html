@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Dashboard</h1>
+    <p>Agrupamento de Escolas Vergílio Ferreira · Ano letivo 2025/2026</p>
+</div>
+
+<!-- Estatísticas -->
+<div class="stats-grid">
+    <div class="stat-card s-alunos">
+        <div class="stat-label">Alunos</div>
+        <div class="stat-value">{{ total_alunos }}</div>
+    </div>
+    <div class="stat-card s-projetos">
+        <div class="stat-label">Projetos</div>
+        <div class="stat-value">{{ total_projetos }}</div>
+    </div>
+    <div class="stat-card s-fases">
+        <div class="stat-label">Fases registadas</div>
+        <div class="stat-value">{{ total_fases }}</div>
+    </div>
+    <div class="stat-card s-iniciar">
+        <div class="stat-label">Por iniciar</div>
+        <div class="stat-value">{{ por_iniciar }}</div>
+    </div>
+    <div class="stat-card s-curso">
+        <div class="stat-label">Em desenvolvimento</div>
+        <div class="stat-value">{{ em_curso }}</div>
+    </div>
+    <div class="stat-card s-conc">
+        <div class="stat-label">Concluídos</div>
+        <div class="stat-value">{{ concluidos }}</div>
+    </div>
+</div>
+
+<!-- Tabela de alunos e projetos -->
+<div class="card">
+    <div class="card-header">
+        <h2>Alunos e Projetos</h2>
+        <div class="actions">
+            <a href="/alunos/novo"   class="btn btn-teal btn-sm">+ Aluno</a>
+            <a href="/projetos/novo" class="btn btn-accent btn-sm">+ Projeto</a>
+        </div>
+    </div>
+
+    {% if alunos_resumo %}
+    <table>
+        <thead>
+            <tr>
+                <th>Aluno</th>
+                <th>Turma</th>
+                <th>Projeto</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Fases</th>
+                <th>Última fase</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for r in alunos_resumo %}
+            <tr>
+                <td>
+                    <a href="/alunos/{{ r.id }}" style="font-weight:500;color:var(--text);text-decoration:none;">
+                        {{ r.nome }}
+                    </a>
+                </td>
+                <td><span class="mono">{{ r.turma }}</span></td>
+                <td>
+                    {% if r.proj_id %}
+                        <a href="/projetos/{{ r.proj_id }}" style="color:var(--accent);text-decoration:none;font-size:.85rem;">
+                            {{ r.proj_titulo }}
+                        </a>
+                    {% else %}
+                        <span style="color:var(--muted);font-size:.82rem;">— sem projeto —</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if r.proj_tipo %}
+                        <span class="badge-tipo {% if r.proj_tipo == 'PAP' %}pap{% endif %}">{{ r.proj_tipo }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if r.estado_geral %}
+                        {% set cls = r.estado_geral | lower | replace(' ','_') %}
+                        {% if r.estado_geral == 'Por iniciar' %}
+                            <span class="badge por-iniciar">Por iniciar</span>
+                        {% elif r.estado_geral == 'Em desenvolvimento' %}
+                            <span class="badge em-desenvolvimento">Em desenvolvimento</span>
+                        {% elif r.estado_geral == 'Concluído' %}
+                            <span class="badge concluido">Concluído</span>
+                        {% else %}
+                            <span class="badge">{{ r.estado_geral }}</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td><span class="mono">{{ r.num_fases or 0 }}</span></td>
+                <td style="font-size:.82rem;color:var(--muted);">{{ r.ultima_fase or '—' }}</td>
+                <td>
+                    <div class="actions">
+                        <a href="/alunos/{{ r.id }}" class="btn btn-surface btn-sm">Ver</a>
+                        {% if r.proj_id %}
+                            <a href="/fases/nova?projeto_id={{ r.proj_id }}" class="btn btn-accent btn-sm">+ Fase</a>
+                        {% else %}
+                            <a href="/projetos/novo?aluno_id={{ r.id }}" class="btn btn-accent btn-sm">+ Projeto</a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">👩‍🎓</div>
+        <h3>Nenhum aluno registado</h3>
+        <p>Comece por adicionar o primeiro aluno.</p>
+        <a href="/alunos/novo" class="btn btn-teal">+ Adicionar Aluno</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

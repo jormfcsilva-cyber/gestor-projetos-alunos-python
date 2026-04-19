@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Pesquisar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Pesquisar</h1>
+    <p>Pesquise por nome de aluno ou título de projeto.</p>
+</div>
+
+<div class="card" style="margin-bottom:1.5rem;">
+    <div class="card-body">
+        <form method="GET" action="/pesquisar" style="display:flex;gap:.75rem;">
+            <input class="search-input" type="text" name="termo" value="{{ termo }}"
+                placeholder="Nome do aluno ou título do projeto..." autofocus
+                style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.7rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;">
+            <button type="submit" class="btn btn-accent">🔍 Pesquisar</button>
+            {% if termo %}<a href="/pesquisar" class="btn btn-surface">✕</a>{% endif %}
+        </form>
+    </div>
+</div>
+
+{% if termo %}
+    <div class="card">
+        <div class="card-header">
+            <h2>{{ resultados|length }} resultado(s) para "{{ termo }}"</h2>
+        </div>
+        {% if resultados %}
+        <table>
+            <thead>
+                <tr><th>Aluno</th><th>Turma</th><th>Projeto</th><th>Tipo</th><th>Estado</th><th>Ações</th></tr>
+            </thead>
+            <tbody>
+            {% for r in resultados %}
+                <tr>
+                    <td><a href="/alunos/{{ r.aluno_id }}" style="font-weight:500;color:var(--text);text-decoration:none;">{{ r.nome }}</a></td>
+                    <td><span class="mono">{{ r.turma }}</span></td>
+                    <td>
+                        {% if r.proj_id %}
+                            <a href="/projetos/{{ r.proj_id }}" style="color:var(--accent);text-decoration:none;font-size:.85rem;">{{ r.titulo }}</a>
+                        {% else %}
+                            <span style="color:var(--muted)">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if r.tipo %}
+                            <span class="badge-tipo {% if r.tipo == 'PAP' %}pap{% endif %}">{{ r.tipo }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if r.estado_geral == 'Por iniciar' %}
+                            <span class="badge por-iniciar">Por iniciar</span>
+                        {% elif r.estado_geral == 'Em desenvolvimento' %}
+                            <span class="badge em-desenvolvimento">Em desenvolvimento</span>
+                        {% elif r.estado_geral == 'Concluído' %}
+                            <span class="badge concluido">Concluído</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <a href="/alunos/{{ r.aluno_id }}" class="btn btn-surface btn-sm">Ver aluno</a>
+                            {% if r.proj_id %}<a href="/projetos/{{ r.proj_id }}" class="btn btn-accent btn-sm">Ver projeto</a>{% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>Sem resultados</h3>
+            <p>Não foi encontrado nenhum aluno ou projeto para "{{ termo }}".</p>
+        </div>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

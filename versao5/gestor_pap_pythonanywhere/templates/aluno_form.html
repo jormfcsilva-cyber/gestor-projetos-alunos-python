@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{% if aluno %}Editar Aluno{% else %}Novo Aluno{% endif %}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="/">Dashboard</a> ›
+    {% if aluno %}<a href="/alunos/{{ aluno.id }}">{{ aluno.nome }}</a> › Editar{% else %}Novo Aluno{% endif %}
+</div>
+
+<div class="page-header">
+    <h1>{% if aluno %}Editar Aluno <span class="id-tag">#{{ aluno.id }}</span>{% else %}Novo Aluno{% endif %}</h1>
+    <p>{% if aluno %}Atualize os dados de {{ aluno.nome }}.{% else %}Registe um novo aluno para acompanhamento de PAP.{% endif %}</p>
+</div>
+
+<div class="form-card" style="max-width:720px;">
+    <form method="POST">
+        <div class="form-grid">
+        <div class="form-group full">
+            <label for="nome">Nome completo *</label>
+            <input type="text" id="nome" name="nome" value="{{ aluno.nome if aluno else '' }}" placeholder="Ex: Ana Silva" required>
+        </div>
+        <div class="form-group">
+            <label for="numero">Nº Aluno</label>
+            <input type="text" id="numero" name="numero" value="{{ aluno.numero if aluno else '' }}" placeholder="Ex: 12345">
+        </div>
+        <div class="form-group">
+            <label for="turma">Turma</label>  
+            <input type="text" id="turma" name="turma" value="{{ aluno.turma if aluno else '' }}" placeholder="Ex: 12º TGPSI">
+            </div>
+            <div class="form-group">
+                <label for="curso">Curso</label>
+                <input type="text" id="curso" name="curso" value="{{ aluno.curso if aluno else '' }}" placeholder="Ex: TGPSI">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="{{ aluno.email if aluno else '' }}" placeholder="aluno@escola.pt">
+            </div>
+            <div class="form-group">
+                <label for="ano_letivo">Ano letivo</label>
+                <input type="text" id="ano_letivo" name="ano_letivo" value="{{ aluno.ano_letivo if aluno else '2025/2026' }}" placeholder="2025/2026">
+            </div>
+            <div class="form-group full">
+                <label for="observacoes">Observações</label>
+                <textarea id="observacoes" name="observacoes" placeholder="Notas sobre o aluno...">{{ aluno.observacoes if aluno else '' }}</textarea>
+            </div>
+        </div>
+        <div class="form-actions">
+            <a href="{{ '/alunos/'+aluno.id|string if aluno else '/' }}" class="btn btn-surface">Cancelar</a>
+            <button type="submit" class="btn btn-teal">💾 {% if aluno %}Guardar alterações{% else %}Adicionar aluno{% endif %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

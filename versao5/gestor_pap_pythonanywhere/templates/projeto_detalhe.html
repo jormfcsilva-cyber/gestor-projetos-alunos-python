@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}{{ projeto.titulo }}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="/">Dashboard</a> ›
+    <a href="/alunos/{{ projeto.aluno_id }}">{{ projeto.aluno_nome }}</a> ›
+    {{ projeto.titulo }}
+</div>
+
+<!-- Cabeçalho do projeto -->
+<div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div>
+        <h1>{{ projeto.titulo }}</h1>
+        <p style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:.4rem;">
+            <span class="badge-tipo {% if projeto.tipo == 'PAP' %}pap{% endif %}">{{ projeto.tipo }}</span>
+            {% if projeto.estado_geral == 'Por iniciar' %}
+                <span class="badge por-iniciar">Por iniciar</span>
+            {% elif projeto.estado_geral == 'Em desenvolvimento' %}
+                <span class="badge em-desenvolvimento">Em desenvolvimento</span>
+            {% elif projeto.estado_geral == 'Concluído' %}
+                <span class="badge concluido">Concluído</span>
+            {% endif %}
+            {% if projeto.data_inicio %}<span class="mono">Início: {{ projeto.data_inicio }}</span>{% endif %}
+            {% if projeto.orientador %}<span style="color:var(--muted)">Orientador: {{ projeto.orientador }}</span>{% endif %}
+        </p>
+    </div>
+    <div class="actions">
+        <a href="/projetos/{{ projeto.id }}/editar" class="btn btn-surface">✏ Editar</a>
+        <a href="/fases/nova?projeto_id={{ projeto.id }}" class="btn btn-accent">+ Nova Fase</a>
+        <a href="/projetos/{{ projeto.id }}/remover" class="btn btn-danger"
+           onclick="return confirm('Remover este projeto e todas as suas fases?')">✕</a>
+    </div>
+</div>
+
+{% if projeto.observacoes %}
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:.875rem;color:var(--muted);">
+    📝 {{ projeto.observacoes }}
+</div>
+{% endif %}
+
+<!-- Timeline de fases -->
+<div class="card">
+    <div class="card-header">
+        <h2>Fases e Reuniões de Acompanhamento</h2>
+        <div class="actions">
+            <span class="mono" style="font-size:.78rem;color:var(--muted)">{{ fases|length }} fase(s)</span>
+            <a href="/fases/nova?projeto_id={{ projeto.id }}" class="btn btn-accent btn-sm">+ Nova Fase</a>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if fases %}
+        <div class="timeline">
+            {% for fase in fases %}
+            {% set dot_cls = 'concluido' if fase.estado == 'Concluída' else ('em-curso' if fase.estado == 'Em curso' else 'pendente') %}
+            <div class="timeline-item">
+                <div class="tl-dot {{ dot_cls }}">{{ loop.index }}</div>
+                <div class="tl-content">
+                    <div class="tl-header">
+                        <span class="tl-title">{{ fase.nome_fase }}</span>
+                        <div class="actions">
+                            {% if fase.estado == 'Em curso' %}
+                                <span class="badge em-curso">Em curso</span>
+                            {% elif fase.estado == 'Concluída' %}
+                                <span class="badge concluido">Concluída</span>
+                            {% else %}
+                                <span class="badge por-iniciar">Pendente</span>
+                            {% endif %}
+                            <a href="/fases/{{ fase.id }}/editar" class="btn btn-surface btn-sm">✏</a>
+                            <a href="/fases/{{ fase.id }}/remover" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Remover esta fase?')">✕</a>
+                        </div>
+                    </div>
+                    <div class="tl-meta">
+                        {% if fase.data_reuniao %}
+                            <span>📅 {{ fase.data_reuniao }}</span>
+                        {% endif %}
+                        {% if fase.ficheiros_entregues %}
+                            <span>📎 {{ fase.ficheiros_entregues }}</span>
+                        {% endif %}
+                    </div>
+                    {% if fase.descricao %}
+                        <div class="tl-body">{{ fase.descricao }}</div>
+                    {% endif %}
+                    {% if fase.avaliacao %}
+                        <span class="tl-nota">Avaliação: {{ fase.avaliacao }}</span>
+                    {% endif %}
+                    {% if fase.observacoes %}
+                        <div class="tl-body" style="margin-top:.4rem;font-style:italic;">{{ fase.observacoes }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🗂</div>
+            <h3>Sem fases registadas</h3>
+            <p>Adicione a primeira fase ou reunião de acompanhamento.</p>
+            <a href="/fases/nova?projeto_id={{ projeto.id }}" class="btn btn-accent">+ Adicionar Fase</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

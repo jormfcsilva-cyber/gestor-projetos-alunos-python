@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{% if utilizador %}Editar Utilizador{% else %}Novo Utilizador{% endif %}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="/">Dashboard</a> ›
+    <a href="/utilizadores">Utilizadores</a> ›
+    {% if utilizador %}Editar{% else %}Novo{% endif %}
+</div>
+
+<div class="page-header">
+    <h1>{% if utilizador %}Editar Utilizador{% else %}Novo Utilizador{% endif %}</h1>
+    <p>{% if utilizador %}Atualize os dados do utilizador. Deixe a password em branco para não alterar.{% else %}Crie um novo utilizador com acesso à aplicação.{% endif %}</p>
+</div>
+
+<div class="form-card" style="max-width:520px;">
+    <form method="POST">
+        <div class="form-grid">
+
+            <div class="form-group full">
+                <label for="nome">Nome completo *</label>
+                <input type="text" id="nome" name="nome"
+                    value="{{ utilizador.nome if utilizador else '' }}"
+                    placeholder="Ex: Ana Costa" required>
+            </div>
+
+            <div class="form-group full">
+                <label for="username">Username *</label>
+                <input type="text" id="username" name="username"
+                    value="{{ utilizador.username if utilizador else '' }}"
+                    placeholder="Ex: anacosta"
+                    {% if utilizador %}readonly style="opacity:.6"{% endif %}
+                    required>
+                {% if utilizador %}
+                <small style="color:var(--muted);font-size:.75rem;">O username não pode ser alterado.</small>
+                {% endif %}
+            </div>
+
+            <div class="form-group full">
+                <label for="password">{% if utilizador %}Nova password{% else %}Password *{% endif %}</label>
+                <input type="password" id="password" name="password"
+                    placeholder="{% if utilizador %}Deixe em branco para não alterar{% else %}Mínimo 4 caracteres{% endif %}"
+                    {% if not utilizador %}required{% endif %}>
+            </div>
+
+            <div class="form-group full">
+                <label for="role">Perfil</label>
+                <select id="role" name="role">
+                    <option value="user" {% if utilizador and utilizador.role == 'user' %}selected{% endif %}>👤 Utilizador</option>
+                    <option value="admin" {% if utilizador and utilizador.role == 'admin' %}selected{% endif %}>⭐ Administrador</option>
+                </select>
+            </div>
+
+            {% if utilizador %}
+            <div class="form-group full">
+                <label style="display:flex;align-items:center;gap:.6rem;text-transform:none;letter-spacing:0;font-size:.9rem;cursor:pointer;">
+                    <input type="checkbox" name="ativo" {% if utilizador.ativo %}checked{% endif %}
+                           style="width:16px;height:16px;accent-color:var(--teal);">
+                    Utilizador ativo
+                </label>
+            </div>
+            {% endif %}
+
+        </div>
+        <div class="form-actions">
+            <a href="/utilizadores" class="btn btn-surface">Cancelar</a>
+            <button type="submit" class="btn btn-accent">
+                💾 {% if utilizador %}Guardar alterações{% else %}Criar utilizador{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

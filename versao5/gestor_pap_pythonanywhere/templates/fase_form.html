@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{% if fase %}Editar Fase{% else %}Nova Fase{% endif %}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="/">Dashboard</a> ›
+    {% if projeto %}
+        <a href="/alunos/{{ projeto.aluno_id }}">{{ projeto.aluno_nome }}</a> ›
+        <a href="/projetos/{{ projeto.id }}">{{ projeto.titulo }}</a> ›
+    {% endif %}
+    {% if fase %}Editar Fase{% else %}Nova Fase{% endif %}
+</div>
+
+<div class="page-header">
+    <h1>{% if fase %}Editar Fase{% else %}Nova Fase / Reunião{% endif %}</h1>
+    {% if projeto %}
+    <p>Projeto: <strong>{{ projeto.titulo }}</strong> · {{ projeto.aluno_nome }}</p>
+    {% endif %}
+</div>
+
+<div class="form-card" style="max-width:760px;">
+    <form method="POST">
+        <input type="hidden" name="projeto_id" value="{{ projeto.id if projeto else (fase.projeto_id if fase else '') }}">
+        <div class="form-grid">
+
+            <div class="form-group full">
+                <label for="nome_fase">Nome da fase *</label>
+                <input type="text" id="nome_fase" name="nome_fase"
+                    value="{{ fase.nome_fase if fase else '' }}"
+                    placeholder="Ex: Anteprojeto, Fase 1, Revisão intercalar..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="data_reuniao">Data da reunião</label>
+                <input type="text" id="data_reuniao" name="data_reuniao"
+                    value="{{ fase.data_reuniao if fase else '' }}"
+                    placeholder="Ex: 15-03-2026">
+            </div>
+
+            <div class="form-group">
+                <label for="estado">Estado</label>
+                <select id="estado" name="estado">
+                    <option value="Em curso"  {% if fase and fase.estado == 'Em curso'  %}selected{% endif %}>Em curso</option>
+                    <option value="Concluída" {% if fase and fase.estado == 'Concluída' %}selected{% endif %}>Concluída</option>
+                    <option value="Pendente"  {% if fase and fase.estado == 'Pendente'  %}selected{% endif %}>Pendente</option>
+                </select>
+            </div>
+
+            <div class="form-group full">
+                <label for="descricao">Descrição / O que foi feito</label>
+                <textarea id="descricao" name="descricao" style="min-height:100px;"
+                    placeholder="Descreva o trabalho realizado nesta fase, os tópicos abordados na reunião...">{{ fase.descricao if fase else '' }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="ficheiros_entregues">Ficheiros entregues</label>
+                <input type="text" id="ficheiros_entregues" name="ficheiros_entregues"
+                    value="{{ fase.ficheiros_entregues if fase else '' }}"
+                    placeholder="Ex: relatório_fase1.pdf, diagrama_bd.png">
+            </div>
+
+            <div class="form-group">
+                <label for="avaliacao">Avaliação / Nota</label>
+                <input type="text" id="avaliacao" name="avaliacao"
+                    value="{{ fase.avaliacao if fase else '' }}"
+                    placeholder="Ex: 15/20, Bom, Aprovado...">
+            </div>
+
+            <div class="form-group full">
+                <label for="observacoes">Observações adicionais</label>
+                <textarea id="observacoes" name="observacoes"
+                    placeholder="Próximos passos, tarefas para a próxima reunião...">{{ fase.observacoes if fase else '' }}</textarea>
+            </div>
+
+        </div>
+        <div class="form-actions">
+            <a href="/projetos/{{ projeto.id if projeto else (fase.projeto_id if fase else '') }}" class="btn btn-surface">Cancelar</a>
+            <button type="submit" class="btn btn-accent">💾 {% if fase %}Guardar alterações{% else %}Registar fase{% endif %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

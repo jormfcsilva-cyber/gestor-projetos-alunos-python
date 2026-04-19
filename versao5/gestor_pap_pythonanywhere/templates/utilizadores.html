@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Utilizadores{% endblock %}
+
+{% block content %}
+<div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div>
+        <h1>👥 Gestão de Utilizadores</h1>
+        <p>Apenas o administrador pode gerir utilizadores.</p>
+    </div>
+    <a href="/utilizadores/novo" class="btn btn-accent">+ Novo Utilizador</a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>Utilizadores registados</h2>
+        <span class="mono" style="font-size:.78rem;">{{ utilizadores|length }} utilizador(es)</span>
+    </div>
+    {% if utilizadores %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Username</th>
+                <th>Perfil</th>
+                <th>Estado</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for u in utilizadores %}
+            <tr>
+                <td style="font-weight:500;">{{ u.nome }}</td>
+                <td><span class="mono">{{ u.username }}</span></td>
+                <td>
+                    {% if u.role == 'admin' %}
+                        <span class="badge" style="background:rgba(245,200,66,.12);color:var(--gold);border:1px solid rgba(245,200,66,.25);">⭐ Admin</span>
+                    {% else %}
+                        <span class="badge" style="background:rgba(79,142,247,.12);color:var(--accent);border:1px solid rgba(79,142,247,.25);">👤 Utilizador</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if u.ativo %}
+                        <span class="badge concluido">● Ativo</span>
+                    {% else %}
+                        <span class="badge por-iniciar">● Inativo</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="actions">
+                        <a href="/utilizadores/{{ u.id }}/editar" class="btn btn-surface btn-sm">✏ Editar</a>
+                        {% if u.username != session.get('username') %}
+                        <a href="/utilizadores/{{ u.id }}/remover" class="btn btn-danger btn-sm"
+                           onclick="return confirm('Remover o utilizador {{ u.nome }}?')">✕</a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endblock %}
